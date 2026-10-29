@@ -13,6 +13,16 @@
   --radius: 14px;
 }
 
+/* Self-hosted Inter (replaces the Google Fonts <link>). lets the browser render our two
+   actually-used weights (400 and 700, see body/h1-h4 below) from that single file. */
+@font-face {
+  font-family: 'Inter';
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url('../fonts/inter-latin.woff2') format('woff2-variations');
+}
+
 *,
 *::before,
 *::after {
@@ -406,7 +416,9 @@ img {
 
 .playbook-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  /* grid-template-columns: repeat(3, 1fr); */ 
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)) ;
+  /* wanted to see how images looked when correctly responsive, even though this is not on the ticket */
   gap: 28px;
 }
 
