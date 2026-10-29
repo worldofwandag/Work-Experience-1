@@ -25,6 +25,24 @@
           <li><a class="btn" href="contact.html">Book a demo</a></li>
         </ul>
       </nav>
+      <!-- Mobile burger: "popovertarget" opens #mobile-nav with no JavaScript (native Popover API) -->
+      <button type="button" class="burger" popovertarget="mobile-nav" aria-label="Open menu">☰</button>
+    </div>
+
+    <!-- Mobile nav modal: opens via the burger's popovertarget, closes on outside click or
+         Escape automatically (native Popover API); see the one onclick below for the one exception -->
+    <div id="mobile-nav" popover class="mobile-nav">
+      <ul class="mobile-nav-links">
+        <li><a href="features.html">Features</a></li>
+        <li><a href="pricing.html">Pricing</a></li>
+        <!-- Only same-page anchor link in this list; the others close the popover naturally by navigating
+             away. One-line JS closes it here since an in-page anchor click doesn't do that on its own. -->
+        <li><a href="#playbook" onclick="document.getElementById('mobile-nav').hidePopover()">Growth playbook</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="https://app.calicomedia.co/login">Log in</a></li>
+        <li><a class="btn" href="contact.html">Book a demo</a></li>
+      </ul>
     </div>
   </header>
 
