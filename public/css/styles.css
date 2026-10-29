@@ -39,7 +39,6 @@ h4 {
 }
 
 h1 {
-  font-size: clamp(1.8rem, 3.6vw, 3.25rem); /* change */
   letter-spacing: -0.02em;
 }
 
@@ -195,6 +194,15 @@ img {
   font: inherit;
 }
 
+/* Guards against the popover staying visually "open" if the viewport is widened
+   past 768px while it's showing: our custom .mobile-nav styles only exist inside
+   the max-width media query, so without this the browser would fall back to its
+   plain default popover box instead of disappearing. Author rules beat the UA
+   stylesheet's :popover-open display rule, so this always wins regardless of order. */
+.mobile-nav {
+  display: none;
+}
+
 .site-header--home {
   background: var(--ink);
   border-bottom: 0;
@@ -258,6 +266,10 @@ img {
 .hero-text {
   flex: 1;
   width: 50%; /* change */
+}
+
+.hero-text h1 {
+  font-size: clamp(1.8rem, 3.6vw, 3.25rem); /* change */
 }
 
 .hero-text .lead {
@@ -825,8 +837,11 @@ img {
     transform: scale(0.50);
   }
 
-  /* :popover-open matches the panel only while it's visible */
+  /* :popover-open matches the panel only while it's visible; display:block is
+     explicit here (rather than relying on the UA stylesheet's default) since the
+     base .mobile-nav rule above now forces display:none outside this breakpoint */
   .mobile-nav:popover-open {
+    display: block;
     opacity: 1;
     transform: scale(1);
   }
@@ -889,9 +904,6 @@ img {
   }
 
 
-
-
-
   .feature-row {
     grid-template-columns: 1fr;
     gap: 32px;
@@ -931,5 +943,22 @@ img {
 
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 375px) {
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .mobile-nav {
+    right: auto;
+    left: 50%;
+    transform-origin: top center; /* was top right; centers the scale-in instead of popping from the corner */
+    transform: translateX(-50%) scale(0.5);
+  }
+
+  .mobile-nav:popover-open {
+    transform: translateX(-50%) scale(1);
   }
 }
