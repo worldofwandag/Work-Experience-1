@@ -39,7 +39,6 @@ h4 {
 }
 
 h1 {
-  font-size: 52px;
   letter-spacing: -0.02em;
 }
 
@@ -89,7 +88,7 @@ img {
 }
 
 .lead {
-  font-size: 20px;
+  font-size: clamp(1rem, 1.3vw, 1.25rem);
   color: var(--ink-soft);
   max-width: 640px;
 }
@@ -108,7 +107,7 @@ img {
   font-weight: 700;
   text-decoration: none;
   border: 0;
-  font-size: 16px;
+  font-size: clamp(0.84rem, 1.1vw, 1rem);   /* change */
   font-family: inherit;
   cursor: pointer;
 }
@@ -170,16 +169,38 @@ img {
   list-style: none;
   margin: 0;
   padding: 0;
+  width: 100%;
 }
 
 .nav-links a {
   color: var(--ink);
   text-decoration: none;
+  font-size: 17px;
+
 }
 
 .nav-links a:hover,
 .nav-links a[aria-current='page'] {
   color: var(--orange-dark);
+}
+
+/* Burger is a <button popovertarget="mobile-nav">; hide it above the 768px
+   breakpoint and strip default button chrome so it matches the old plain glyph look */
+.burger {
+  display: none;
+  background: none;
+  border: 0;
+  padding: 0;
+  font: inherit;
+}
+
+/* Guards against the popover staying visually "open" if the viewport is widened
+   past 768px while it's showing: our custom .mobile-nav styles only exist inside
+   the max-width media query, so without this the browser would fall back to its
+   plain default popover box instead of disappearing. Author rules beat the UA
+   stylesheet's :popover-open display rule, so this always wins regardless of order. */
+.mobile-nav {
+  display: none;
 }
 
 .site-header--home {
@@ -197,7 +218,7 @@ img {
 }
 
 .site-header--home .container {
-  flex-wrap: nowrap;
+  flex-wrap: wrap; /*change  */
 }
 
 .site-header--home nav {
@@ -239,11 +260,16 @@ img {
 .hero-inner {
   display: flex;
   align-items: center;
-  gap: 56px;
+  gap: 40px; /* change */
 }
 
 .hero-text {
   flex: 1;
+  width: 50%; /* change */
+}
+
+.hero-text h1 {
+  font-size: clamp(1.8rem, 3.6vw, 3.25rem); /* change */
 }
 
 .hero-text .lead {
@@ -258,8 +284,10 @@ img {
 }
 
 .hero-media {
-  width: 600px;
+  max-width: 700px; /* change max width instead of width*/
+  width: 50%; /* change */
   flex-shrink: 0;
+  align-self: flex-start; /* change */
 }
 
 .hero-image {
@@ -406,7 +434,7 @@ img {
 
 .playbook-grid {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   gap: 28px;
 }
 
@@ -759,6 +787,123 @@ img {
     padding: 64px 0;
   }
 
+
+
+
+  /* Only the home page (site-header--home) has a burger/popover nav, so only
+     its nav is hidden here; other pages keep their always-visible nav links */
+  .site-header--home nav {
+    display: none;
+  }
+
+  .burger {
+    display: block;
+    color: white;
+    font-size: 28px;
+    cursor: pointer;
+    transition: all 0.2s ease-out;
+  }
+
+  .burger:hover {
+    color: var(--orange);
+  }
+
+  /* --- Mobile nav modal (Popover API; one inline onclick below handles
+     the one same-page link that can't close itself via navigation) --- */
+
+  /* Panel shown by the browser when the burger's popovertarget opens #mobile-nav.
+     Anchored to the top-right, under the burger, instead of centered, so it
+     visually "pops" out from the icon that opened it rather than appearing
+     as a detached centered dialog */
+  .mobile-nav {
+    border: none;
+    border-radius: 16px;
+    padding: 28px 32px;
+    inset: unset;
+    top: 64px;        /* sits just under the header */
+    right: 24px;       /* aligned with the container's right padding, under the burger */
+    left: auto;
+    bottom: auto;
+    margin: 0;
+    width: min(78vw, 280px);
+    background: var(--ink);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+
+    /* entrance/exit transition driven purely by CSS, no JS */
+    transition: opacity 0.2s ease, transform 0.2s ease,
+      overlay 0.2s ease allow-discrete, display 0.2s ease allow-discrete;
+    opacity: 0;
+    transform-origin: top right; /* scales from the burger's corner, not the center */
+    transform: scale(0.50);
+  }
+
+  /* :popover-open matches the panel only while it's visible; display:block is
+     explicit here (rather than relying on the UA stylesheet's default) since the
+     base .mobile-nav rule above now forces display:none outside this breakpoint */
+  .mobile-nav:popover-open {
+    display: block;
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  /* Starting state for the open transition (browsers without @starting-style
+     support just skip the animation and show the modal instantly) */
+  @starting-style {
+    .mobile-nav:popover-open {
+      opacity: 0;
+      transform: scale(0.85);
+    }
+  }
+
+  /* Dims the page behind the modal; part of the native popover, not a hand-rolled overlay */
+  .mobile-nav::backdrop {
+    background: rgba(0, 0, 0, 0.5);
+  }
+
+  .mobile-nav-links {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    text-align: center;
+  }
+
+  .mobile-nav-links a {
+    color: var(--white);
+    text-decoration: none;
+    font-size: 18px;
+  }
+
+  .mobile-nav-links a:hover {
+    color: var(--orange);
+  }
+
+  .mobile-nav-links .btn {
+    display: inline-block;
+    margin-top: 4px;
+  }
+
+  .hero {
+    padding-top: 20px;
+  }
+
+  .hero-inner {
+    flex-direction: column-reverse;
+    justify-content: center;
+  }
+
+  .hero-media {
+    width: 100%;
+    align-self: center;
+  }
+
+  .hero-text {
+    width: 100%;
+  }
+
+
   .feature-row {
     grid-template-columns: 1fr;
     gap: 32px;
@@ -798,5 +943,22 @@ img {
 
   .footer-grid {
     grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 375px) {
+  .hero-actions {
+    justify-content: center;
+  }
+
+  .mobile-nav {
+    right: auto;
+    left: 50%;
+    transform-origin: top center; /* was top right; centers the scale-in instead of popping from the corner */
+    transform: translateX(-50%) scale(0.5);
+  }
+
+  .mobile-nav:popover-open {
+    transform: translateX(-50%) scale(1);
   }
 }
