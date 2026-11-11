@@ -27,6 +27,6 @@ Tickets are done in order. Merge one PR into your fork's `main` before you branc
 
 - The change does what the ticket asks, and nothing else.
 - Nothing else got worse. In particular, desktop (1440px) must look the same unless the ticket says otherwise.
-- The code matches what's already here. Reuse the existing CSS breakpoints and patterns rather than inventing new ones.
+- The code matches what's already here. Reuse the existing CSS breakpoints and patterns if possible, rather than inventing new ones. Otherwise, feel free to make new media queries where necessary.
 - No leftover debug code, commented-out blocks or unused files.
 - The PR description is clear enough that someone could understand the change without reading every line.
